@@ -171,4 +171,26 @@ colnames(Goal4ObjectiveC)= c("Base", "Month6")
 Goal4ObjectiveC$Difference = (Goal4ObjectiveC$Month6-Goal4ObjectiveC$Base)/Goal4ObjectiveC$Base
 
 ### Goal 4 Objective D ###### ###### ###### ###### ###### ###### ###### ###### ###### ###### ###### ###### ###### ###### 
-# Could create a composite score: SatisfiedRelationships maybe just this variable, because it is about building relationships skills
+# Could create a composite score:  If you want to include OverallHealth it can be done, just is a little trickier
+# So adding to binary variables FamilySupport and SelfHelp where two means yes to both 1 means yes to one and zero means no to both
+# No variables like SatisfiedHealth, because there is not enough data
+Goal4ObjectiveD =  data.frame(GPRAAll$FamilySupport.x, GPRAAll$SelfHelp.x, GPRAAll$FamilySupport.y, GPRAAll$SelfHelp.y)
+Goal4ObjectiveD = data.frame(apply(Goal4ObjectiveD, 2, function(x){ifelse(x == 3, NA, ifelse(x == 4,NA, ifelse(x == 2, 0, x)))}))
+Goal4ObjectiveD = na.omit(Goal4ObjectiveD)
+dim(Goal4ObjectiveD)
+summary(Goal4ObjectiveD)
+
+Goal4ObjectiveDBase = data.frame(Goal4ObjectiveD[,1:2])
+Goal4ObjectiveDBase = data.frame(apply(Goal4ObjectiveDBase, 1, sum))
+colnames(Goal4ObjectiveDBase) = c("Base")
+head(Goal4ObjectiveDBase)
+
+Goal4ObjectiveDMonth6 = data.frame(Goal4ObjectiveD[,3:4])
+Goal4ObjectiveDMonth6 = data.frame(apply(Goal4ObjectiveDMonth6, 1, sum))
+colnames(Goal4ObjectiveDMonth6) = c("Month6")
+head(Goal4ObjectiveDMonth6)
+
+Goal4ObjectiveD = data.frame(Goal4ObjectiveDBase, Goal4ObjectiveDMonth6)
+head(Goal4ObjectiveD)
+wilcox.test(Goal4ObjectiveD$Month6, Goal4ObjectiveD$Base, paired = TRUE, alternative = c("greater"))
+
