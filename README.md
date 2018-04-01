@@ -370,5 +370,5 @@ write.csv(Goal3ObjectiveDBaseMonth6, "Goal3ObjectiveDBaseMonth6.csv", row.names 
 # Goal 4 Objective D Increase particpant independent living skills
 # Goal 3 Objective E increase benefits enrollment
 # Using housing rate data when you get it
-	
+
 
