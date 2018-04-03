@@ -139,13 +139,17 @@ write.csv(GAD7BaseMonth6, "GAD7BaseMonth6.csv", row.names = FALSE)
 # if there is a missing value for the times variable it is a no and not a missing and I can put a zero.
 # What variables to include.  Not using DrugRelated, because almost all of the data is coded as missing. 
 # So instead just using general variable TimesCrime as the crime indicator.
+# So need to change the variables names in the loading data 
 
-Goal3ObjectiveCBaseMonth6 = data.frame(ParticipantID = GPRAAll$ParticipantID, GPRAAll$InAlcohol.x, GPRAAll$InAlcohol.y, GPRAAll$OutAlcohol.x, GPRAAll$OutAlcohol.y, GPRAAll$ERAlcohol.x, GPRAAll$ERAlcohol.y)
+
+
+Goal3ObjectiveCBaseMonth6 = data.frame(ClientID = GPRAAll$ClientID, GPRAAll$InpatientAlcoholSA.x, GPRAAll$InpatientAlcoholSA.y, GPRAAll$OutpatientAlcoholSA.x, GPRAAll$OutpatientAlcoholSA.y, GPRAAll$ERAlcoholSA.x, GPRAAll$ERAlcoholSA.y)
 summary(Goal3ObjectiveCBaseMonth6)
 Goal3ObjectiveCBaseMonth6 = data.frame(na.omit(Goal3ObjectiveCBaseMonth6))
 
-Goal3ObjectiveCBaseMonth6Times = data.frame(ParticipantID = GPRAAll$ParticipantID, GPRAAll$TimesCrime.x,GPRAAll$TimesCrime.y, GPRAAll$InAlcoholTimes.x, GPRAAll$InAlcoholTimes.y, GPRAAll$OutAlcoholTimes.x, GPRAAll$OutAlcoholTimes.y, GPRAAll$ERAlcoholTimes.x, GPRAAll$ERAlcoholTimes.y)
-Goal3ObjectiveCBaseMonth6 = merge(Goal3ObjectiveCBaseMonth6 , Goal3ObjectiveCBaseMonth6Times , by = "ParticipantID", all.x = TRUE)
+Goal3ObjectiveCBaseMonth6Times = data.frame(ClientID = GPRAAll$ClientID, GPRAAll$NrCrimes.x, GPRAAll$NrCrimes.y, GPRAAll$InpatientAlcoholSANights.x, GPRAAll$InpatientAlcoholSANights.y, GPRAAll$OutpatientAlcoholSATimes.x, GPRAAll$OutpatientAlcoholSATimes.y, GPRAAll$ERAlcoholSA.x, GPRAAll$ERAlcoholSA.y)
+Goal3ObjectiveCBaseMonth6 = merge(Goal3ObjectiveCBaseMonth6 , Goal3ObjectiveCBaseMonth6Times , by = "ClientID", all.x = TRUE)
+
 head(Goal3ObjectiveCBaseMonth6)
 summary(Goal3ObjectiveCBaseMonth6)
 dim(Goal3ObjectiveCBaseMonth6)
@@ -157,13 +161,18 @@ write.csv(Goal3ObjectiveCBaseMonth6, "Goal3ObjectiveCBaseMonth6.csv", row.names 
 Goal3ObjectiveCBaseMonth6  = read.csv("Goal3ObjectiveCBaseMonth6.csv", header = TRUE)
 summary(Goal3ObjectiveCBaseMonth6)
 ### You need to change the Refused response to 0.  TimesCrime person 1 was Refused
-Goal3ObjectiveCBase = data.frame(Goal3ObjectiveCBaseMonth6$GPRAAll.TimesCrime.x, Goal3ObjectiveCBaseMonth6$GPRAAll.InAlcoholTimes.x, Goal3ObjectiveCBaseMonth6$GPRAAll.OutAlcoholTimes.x, Goal3ObjectiveCBaseMonth6$GPRAAll.ERAlcoholTimes.x)
+Goal3ObjectiveCBaseMonth6 = data.frame(apply(Goal3ObjectiveCBaseMonth6, 2, function(x){ifelse(x == -1, 0, x)}))
+head(Goal3ObjectiveCBaseMonth6)
+summary(Goal3ObjectiveCBaseMonth6)
+
+
+Goal3ObjectiveCBase = data.frame(Goal3ObjectiveCBaseMonth6$GPRAAll.NrCrimes.x, Goal3ObjectiveCBaseMonth6$GPRAAll.InpatientAlcoholSANights.x, Goal3ObjectiveCBaseMonth6$GPRAAll.OutpatientAlcoholSATimes.x, Goal3ObjectiveCBaseMonth6$GPRAAll.ERAlcoholSA.x)
 summary(Goal3ObjectiveCBase)
 Goal3ObjectiveCBase
 Goal3ObjectiveCBase = data.frame(apply(Goal3ObjectiveCBase, 1, sum, na.rm = TRUE))
 colnames(Goal3ObjectiveCBase) = c("SABase")
 
-Goal3ObjectiveCMonth6= data.frame(Goal3ObjectiveCBaseMonth6$GPRAAll.TimesCrime.y,Goal3ObjectiveCBaseMonth6$GPRAAll.InAlcoholTimes.y, Goal3ObjectiveCBaseMonth6$GPRAAll.OutAlcoholTimes.y, Goal3ObjectiveCBaseMonth6$GPRAAll.ERAlcoholTimes.y)
+Goal3ObjectiveCMonth6= data.frame(Goal3ObjectiveCBaseMonth6$GPRAAll.NrCrimes.y,Goal3ObjectiveCBaseMonth6$GPRAAll.InpatientAlcoholSANights.y, Goal3ObjectiveCBaseMonth6$GPRAAll.OutpatientAlcoholSATimes.y, Goal3ObjectiveCBaseMonth6$GPRAAll.ERAlcoholSA.y.y)
 write.csv(Goal3ObjectiveCMonth6, "Goal3ObjectiveCMonth6.csv", row.names = FALSE)
 Goal3ObjectiveCMonth6 = read.csv("Goal3ObjectiveCMonth6.csv", header = TRUE)
 Goal3ObjectiveCMonth6= data.frame(apply(Goal3ObjectiveCMonth6, 1, sum, na.rm = TRUE))
