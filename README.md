@@ -146,15 +146,19 @@ Goal3ObjectiveCBaseMonth6 = data.frame(ClientID = GPRAAll$ClientID, GPRAAll$Inpa
 summary(Goal3ObjectiveCBaseMonth6)
 Goal3ObjectiveCBaseMonth6 = data.frame(na.omit(Goal3ObjectiveCBaseMonth6))
 
-Goal3ObjectiveCBaseMonth6Times = data.frame(ClientID = GPRAAll$ClientID, GPRAAll$NrCrimes.x, GPRAAll$NrCrimes.y, GPRAAll$InpatientAlcoholSANights.x, GPRAAll$InpatientAlcoholSANights.y, GPRAAll$OutpatientAlcoholSATimes.x, GPRAAll$OutpatientAlcoholSATimes.y, GPRAAll$ERAlcoholSA.x, GPRAAll$ERAlcoholSA.y)
+Goal3ObjectiveCBaseMonth6Times = data.frame(ClientID = GPRAAll$ClientID,GPRAAll$InpatientAlcoholSANights.x, GPRAAll$InpatientAlcoholSANights.y, GPRAAll$OutpatientAlcoholSATimes.x, GPRAAll$OutpatientAlcoholSATimes.y, GPRAAll$ERAlcoholSATimes.x, GPRAAll$ERAlcoholSATimes.y)
 Goal3ObjectiveCBaseMonth6 = merge(Goal3ObjectiveCBaseMonth6 , Goal3ObjectiveCBaseMonth6Times , by = "ClientID", all.x = TRUE)
 
 head(Goal3ObjectiveCBaseMonth6)
 summary(Goal3ObjectiveCBaseMonth6)
 dim(Goal3ObjectiveCBaseMonth6)
 Goal3ObjectiveCBaseMonth6 = data.frame(Goal3ObjectiveCBaseMonth6[,7:15])
+head(Goal3ObjectiveCBaseMonth6)
+Goal3ObjectiveCBaseMonth6 = data.frame(apply(Goal3ObjectiveCBaseMonth6, 2, function(x){ifelse(x == "-7", 0, x)}))
+
+
 # You can just sum across with na.rm = TRUE and the NA will be treated as zeros so you don't have to get rid of them.
-Goal3ObjectiveCBaseMonth6 = data.frame(apply(Goal3ObjectiveCBaseMonth6, 2, function(x){ifelse(x == -99.0, 0,x)}))
+Goal3ObjectiveCBaseMonth6 = data.frame(apply(Goal3ObjectiveCBaseMonth6, 2, function(x){ifelse(x == -99.0, 0, ifelse(x == -7, 0,x))}))
 summary(Goal3ObjectiveCBaseMonth6)
 write.csv(Goal3ObjectiveCBaseMonth6, "Goal3ObjectiveCBaseMonth6.csv", row.names = FALSE)
 Goal3ObjectiveCBaseMonth6  = read.csv("Goal3ObjectiveCBaseMonth6.csv", header = TRUE)
@@ -165,13 +169,13 @@ head(Goal3ObjectiveCBaseMonth6)
 summary(Goal3ObjectiveCBaseMonth6)
 
 
-Goal3ObjectiveCBase = data.frame(Goal3ObjectiveCBaseMonth6$GPRAAll.NrCrimes.x, Goal3ObjectiveCBaseMonth6$GPRAAll.InpatientAlcoholSANights.x, Goal3ObjectiveCBaseMonth6$GPRAAll.OutpatientAlcoholSATimes.x, Goal3ObjectiveCBaseMonth6$GPRAAll.ERAlcoholSA.x)
+Goal3ObjectiveCBase = data.frame(Goal3ObjectiveCBaseMonth6$GPRAAll.InpatientAlcoholSANights.x, Goal3ObjectiveCBaseMonth6$GPRAAll.OutpatientAlcoholSATimes.x, Goal3ObjectiveCBaseMonth6$GPRAAll.ERAlcoholSATimes.x)
 summary(Goal3ObjectiveCBase)
 Goal3ObjectiveCBase
 Goal3ObjectiveCBase = data.frame(apply(Goal3ObjectiveCBase, 1, sum, na.rm = TRUE))
 colnames(Goal3ObjectiveCBase) = c("SABase")
 
-Goal3ObjectiveCMonth6= data.frame(Goal3ObjectiveCBaseMonth6$GPRAAll.NrCrimes.y,Goal3ObjectiveCBaseMonth6$GPRAAll.InpatientAlcoholSANights.y, Goal3ObjectiveCBaseMonth6$GPRAAll.OutpatientAlcoholSATimes.y, Goal3ObjectiveCBaseMonth6$GPRAAll.ERAlcoholSA.y.y)
+Goal3ObjectiveCMonth6= data.frame(Goal3ObjectiveCBaseMonth6$GPRAAll.InpatientAlcoholSANights.y, Goal3ObjectiveCBaseMonth6$GPRAAll.OutpatientAlcoholSATimes.y, Goal3ObjectiveCBaseMonth6$GPRAAll.ERAlcoholSATimes.y)
 write.csv(Goal3ObjectiveCMonth6, "Goal3ObjectiveCMonth6.csv", row.names = FALSE)
 Goal3ObjectiveCMonth6 = read.csv("Goal3ObjectiveCMonth6.csv", header = TRUE)
 Goal3ObjectiveCMonth6= data.frame(apply(Goal3ObjectiveCMonth6, 1, sum, na.rm = TRUE))
@@ -189,28 +193,48 @@ Goal3ObjectiveCBaseMonth6 = round(Goal3ObjectiveCBaseMonth6, 2)
 write.csv(Goal3ObjectiveCBaseMonth6, "Goal3ObjectiveCBaseMonth6.csv", row.names = FALSE)
 
 #### Goal 3 Objective D ######## ######## ################################################
-Goal3ObjectiveDBaseMonth6 = data.frame(ParticipantID = GPRAAll$ParticipantID, GPRAAll$InMental.x, GPRAAll$InMental.y, GPRAAll$OutMental.x, GPRAAll$OutMental.y, GPRAAll$ERMental.x, GPRAAll$ERMental.y)
-summary(Goal3ObjectiveDBaseMonth6)
-Goal3ObjectiveDBaseMonth6 = na.omit(Goal3ObjectiveDBaseMonth6)
 
-Goal3ObjectiveDBaseMonth6Times = data.frame(ParticipantID = GPRAAll$ParticipantID, GPRAAll$TimesCrime.x,GPRAAll$TimesCrime.y, GPRAAll$InMentalTimes.x, GPRAAll$InMentalTimes.y, GPRAAll$OutMentalTimes.x, GPRAAll$OutMentalTimes.y, GPRAAll$ERMentalTimes.x, GPRAAll$ERMentalTimes.y)
-Goal3ObjectiveDBaseMonth6 = merge(Goal3ObjectiveDBaseMonth6 , Goal3ObjectiveDBaseMonth6Times , by = "ParticipantID", all.x = TRUE)
+Goal3ObjectiveDBaseMonth6 = data.frame(ClientID = GPRAAll$ClientID, GPRAAll$InpatientMental.x, GPRAAll$InpatientMental.y, GPRAAll$OutpatientMental.x, GPRAAll$OutpatientMental.y, GPRAAll$ERMental.x, GPRAAll$ERMental.y)
+summary(Goal3ObjectiveDBaseMonth6)
+Goal3ObjectiveDBaseMonth6 = data.frame(na.omit(Goal3ObjectiveDBaseMonth6))
+
+Goal3ObjectiveDBaseMonth6Times = data.frame(ClientID = GPRAAll$ClientID,GPRAAll$InpatientMentalNights.x, GPRAAll$InpatientMentalNights.y, GPRAAll$OutpatientMentalTimes.x, GPRAAll$OutpatientMentalTimes.y, GPRAAll$ERMentalTimes.x, GPRAAll$ERMentalTimes.y)
+Goal3ObjectiveDBaseMonth6 = merge(Goal3ObjectiveDBaseMonth6 , Goal3ObjectiveDBaseMonth6Times , by = "ClientID", all.x = TRUE)
+
+Goal3ObjectiveDBaseMonth6 = data.frame(ClientID = GPRAAll$ClientID, GPRAAll$InpatientMental.x, GPRAAll$InpatientMental.y, GPRAAll$OutpatientMental.x, GPRAAll$OutpatientMental.y, GPRAAll$ERMental.x, GPRAAll$ERMental.y)
+summary(Goal3ObjectiveDBaseMonth6)
+Goal3ObjectiveDBaseMonth6 = data.frame(na.omit(Goal3ObjectiveDBaseMonth6))
+
+Goal3ObjectiveDBaseMonth6Times = data.frame(ClientID = GPRAAll$ClientID,GPRAAll$InpatientMentalNights.x, GPRAAll$InpatientMentalNights.y, GPRAAll$OutpatientMentalTimes.x, GPRAAll$OutpatientMentalTimes.y, GPRAAll$ERMentalTimes.x, GPRAAll$ERMentalTimes.y)
+Goal3ObjectiveDBaseMonth6 = merge(Goal3ObjectiveDBaseMonth6 , Goal3ObjectiveDBaseMonth6Times , by = "ClientID", all.x = TRUE)
+
 head(Goal3ObjectiveDBaseMonth6)
 summary(Goal3ObjectiveDBaseMonth6)
 dim(Goal3ObjectiveDBaseMonth6)
-Goal3ObjectiveDBaseMonth6 = data.frame(Goal3ObjectiveDBaseMonth6[,7:15])
+head(Goal3ObjectiveDBaseMonth6)
+Goal3ObjectiveDBaseMonth6 = data.frame(Goal3ObjectiveDBaseMonth6[,8:13])
+head(Goal3ObjectiveDBaseMonth6)
+
+
 # You can just sum across with na.rm = TRUE and the NA will be treated as zeros so you don't have to get rid of them.
-Goal3ObjectiveDBaseMonth6 = data.frame(apply(Goal3ObjectiveDBaseMonth6, 2, function(x){ifelse(x == -99.0, 0,x)}))
+Goal3ObjectiveDBaseMonth6 = data.frame(apply(Goal3ObjectiveDBaseMonth6, 2, function(x){ifelse(x == -99.0, 0, ifelse(x == -7, 0,x))}))
 summary(Goal3ObjectiveDBaseMonth6)
 write.csv(Goal3ObjectiveDBaseMonth6, "Goal3ObjectiveDBaseMonth6.csv", row.names = FALSE)
 Goal3ObjectiveDBaseMonth6  = read.csv("Goal3ObjectiveDBaseMonth6.csv", header = TRUE)
 summary(Goal3ObjectiveDBaseMonth6)
-### You need to change the Refused response to 0.
-Goal3ObjectiveDBase = data.frame(Goal3ObjectiveDBaseMonth6$GPRAAll.TimesCrime.x, Goal3ObjectiveDBaseMonth6$GPRAAll.InMentalTimes.x, Goal3ObjectiveDBaseMonth6$GPRAAll.OutMentalTimes.x, Goal3ObjectiveDBaseMonth6$GPRAAll.ERMentalTimes.x)
+### You need to change the Refused response to 0.  TimesCrime person 1 was Refused
+Goal3ObjectiveDBaseMonth6 = data.frame(apply(Goal3ObjectiveDBaseMonth6, 2, function(x){ifelse(x == -1, 0, x)}))
+head(Goal3ObjectiveDBaseMonth6)
+summary(Goal3ObjectiveDBaseMonth6)
+
+
+Goal3ObjectiveDBase = data.frame(Goal3ObjectiveDBaseMonth6$GPRAAll.InpatientMentalNights.x, Goal3ObjectiveDBaseMonth6$GPRAAll.OutpatientMentalTimes.x, Goal3ObjectiveDBaseMonth6$GPRAAll.ERMentalTimes.x)
+summary(Goal3ObjectiveDBase)
+Goal3ObjectiveDBase
 Goal3ObjectiveDBase = data.frame(apply(Goal3ObjectiveDBase, 1, sum, na.rm = TRUE))
 colnames(Goal3ObjectiveDBase) = c("SABase")
 
-Goal3ObjectiveDMonth6= data.frame(Goal3ObjectiveDBaseMonth6$GPRAAll.TimesCrime.y,Goal3ObjectiveDBaseMonth6$GPRAAll.InMentalTimes.y, Goal3ObjectiveDBaseMonth6$GPRAAll.OutMentalTimes.y, Goal3ObjectiveDBaseMonth6$GPRAAll.ERMentalTimes.y)
+Goal3ObjectiveDMonth6= data.frame(Goal3ObjectiveDBaseMonth6$GPRAAll.InpatientMentalNights.y, Goal3ObjectiveDBaseMonth6$GPRAAll.OutpatientMentalTimes.y, Goal3ObjectiveDBaseMonth6$GPRAAll.ERMentalTimes.y)
 write.csv(Goal3ObjectiveDMonth6, "Goal3ObjectiveDMonth6.csv", row.names = FALSE)
 Goal3ObjectiveDMonth6 = read.csv("Goal3ObjectiveDMonth6.csv", header = TRUE)
 Goal3ObjectiveDMonth6= data.frame(apply(Goal3ObjectiveDMonth6, 1, sum, na.rm = TRUE))
@@ -220,12 +244,13 @@ Goal3ObjectiveDBaseMonth6 = data.frame(Goal3ObjectiveDMonth6, Goal3ObjectiveDBas
 colnames(Goal3ObjectiveDBaseMonth6) = c("SAMonth6", "SABase")
 summary(Goal3ObjectiveDBaseMonth6)
 wilcox.test(Goal3ObjectiveDBaseMonth6$SAMonth6, Goal3ObjectiveDBaseMonth6$SABase, paired = TRUE, alternative = c("less"))
-## Can report the means, but they are statistically significantly different.
 Goal3ObjectiveDBaseMonth6 = data.frame(t(colMeans(Goal3ObjectiveDBaseMonth6)))
 
 Goal3ObjectiveDBaseMonth6$Difference = (Goal3ObjectiveDBaseMonth6$SAMonth6-Goal3ObjectiveDBaseMonth6$SABase)/ Goal3ObjectiveDBaseMonth6$SABase
 Goal3ObjectiveDBaseMonth6 = round(Goal3ObjectiveDBaseMonth6, 2)
 write.csv(Goal3ObjectiveDBaseMonth6, "Goal3ObjectiveDBaseMonth6.csv", row.names = FALSE)
+
+rite.csv(Goal3ObjectiveDBaseMonth6, "Goal3ObjectiveDBaseMonth6.csv", row.names = FALSE)
 
 #### Goal 3 Objective E ####### ####### ####### ####### ####### ####### ####### ####### ####### ####### ####### ####### 
 # Need to sum the following variables: TANF, IWAP, Medicaid, LegalAid, SSI, TTA, FoodBanks, HUD, Area10, RecoveryWorks, SNAP, WIC
