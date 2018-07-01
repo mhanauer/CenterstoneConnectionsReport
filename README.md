@@ -47,7 +47,7 @@ write.csv(Goal1ObjectiveConn, "Goal1ObjectiveConn.csv", row.names = FALSE)
 DAUseAlcoholDays.x = data.frame(GPRAAll$DAUseAlcoholDays.x)
 DAUseAlcoholDays.y = data.frame(GPRAAll$DAUseAlcoholDays.y)
 
-Goal3ObjectiveA = data.frame(GPRAAll.DAUseAlcoholDays.x, DAUseAlcoholDays.y)
+Goal3ObjectiveA = data.frame(DAUseAlcoholDays.x, DAUseAlcoholDays.y)
 summary(Goal3ObjectiveA)
 colnames(Goal3ObjectiveA) =c("DAUseAlcoholDays.x", "DAUseAlcoholDays.y")
 Goal3ObjectiveA  = data.frame(apply(Goal3ObjectiveA, 2, function(x){ifelse(x < 0, NA, x)}))
@@ -274,7 +274,8 @@ benefitsCon = data.frame(apply(Goal3ObjectiveEBaseMonth6, 1, sum, na.rm = TRUE))
 benefitsCon = apply(benefitsCon, 2, sum)
 benefitsCon
 #### Goal 4 Objective C ########### #############################################################################
-# Grab employed variable.  Then 1 and 2 are 1 for employed, 8, 9, and 10 are NA everything else is 0.
+# Grab employed variable.  Then 1 and 2 are 1 for employed, 8, 9, and 10 are NA everything else is .
+ 
 Goal4ObjectiveC = data.frame(GPRAAll$EmployStatus.x, GPRAAll$EmployStatus.y)
 write.csv(Goal4ObjectiveC, "Goal4ObjectiveC.csv", row.names = FALSE)
 Goal4ObjectiveC = read.csv("Goal4ObjectiveC.csv", header = TRUE)
@@ -318,30 +319,15 @@ Goal4ObjectiveD = data.frame(t(colMeans(Goal4ObjectiveD)))
 Goal4ObjectiveD$Difference = (Goal4ObjectiveD$Month6-Goal4ObjectiveD$Base)/ Goal4ObjectiveD$Base
 Goal4ObjectiveD = round(Goal4ObjectiveD, 2)
 write.csv(Goal4ObjectiveD, "Goal4ObjectiveD.csv", row.names = FALSE)
-.86*131
-install.packages("Rcmdr")
 
-library(Rcmdr)
 
 ##### Goal 5 Objective B ###### ##########################################
 ### Just get demographcs from baseline: White, Black, Hispanic, Asian
 Goal5ObjectiveBEth = data.frame(GPRAAll$RaceWhite.x, GPRAAll$HispanicLatino.x, GPRAAll$RaceBlack.x, GPRAAll$RaceAsian.x, GPRAAll$RaceAmericanIndian.x)
 Goal5ObjectiveBEth = data.frame(apply(Goal5ObjectiveBEth, 2, function(x){ifelse(x == 2, 0, ifelse(x == -99, NA,ifelse(x == "<NA>", NA, x)))}))
 colnames(Goal5ObjectiveBEth) = c("White", "Hispanic", "Black", "Asian", "AmericanIndian")
-n = dim(Goal5ObjectiveBEth)
-n = n[1]
-library(psych)
-white = count(Goal5ObjectiveBEth, "White")
-white = white[1,2]/n; white
+apply(Goal5ObjectiveBEth, 2, function(x) (describe.factor(x)))
 
-Black = count(Goal5ObjectiveBEth, "Black")
-Black = Black[1,2]/n; Black
-
-Asian = count(Goal5ObjectiveBEth, "Asian")
-Asian = Asian[1,2]/n; Asian
-
-AmericanIndian = count(Goal5ObjectiveBEth, "AmericanIndian")
-AmericanIndian = AmericanIndian[1,2]/n; AmericanIndian
 
 ## Age ############
 age = data.frame(GPRAAll$BirthYear.x)
